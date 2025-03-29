@@ -3,7 +3,7 @@ export function clearableObject<T extends object>(obj: T): Partial<T> | undefine
 
   for (const key in obj) {
     const value = obj[key];
-    if (value !== null && value !== undefined && value !== "") {
+    if (value !== null && value !== undefined) {
       filteredObj[key] = value;
     }
   }

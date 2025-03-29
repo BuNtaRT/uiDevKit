@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { flex, grid } from "../../styles/displayStyles.ts";
 
 export const Bar = styled(Toolbar)`
-  ${grid({ columns: "40px 1fr 40px" })};
+  ${grid({ columns: "40px 1fr 40px 150px" })};
   justify-content: center;
   justify-items: center;
 `;

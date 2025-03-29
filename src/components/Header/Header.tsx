@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, Menu, MenuItem } from "@mui/material";
+import { AppBar, Box, Button, IconButton, Menu, MenuItem } from "@mui/material";
 import { FC, useState, MouseEvent } from "react";
 import { sections, SectionType, SimpleSectionType } from "../../constant/sections.ts";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -7,11 +7,19 @@ import { Bar, SectionsContainer } from "./Header.styles.ts";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { clearAuth } from "../../utils/getAuth.ts";
 import { login } from "../../constant/routes.ts";
+import Logo from "../Logo.tsx";
+import { currentUserState, themeState } from "../../atoms/atoms.ts";
+import { useLoadableSingleData } from "../../utils/useLoadableData.ts";
+import { Brightness4, Brightness7 } from "@mui/icons-material";
+import { useAtom } from "jotai";
 
 const Header: FC = () => {
+  const { data: user } = useLoadableSingleData(currentUserState);
+
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [subSections, setSubSections] = useState<SimpleSectionType[] | null>(null);
 
+  const [theme, setTheme] = useAtom(themeState);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -29,7 +37,7 @@ const Header: FC = () => {
     setAnchorEl(null);
   };
 
-  const parts = sections();
+  const parts = sections(user);
   const isSection = (section: SectionType) => "route" in section;
 
   const handleLogout = () => {
@@ -42,14 +50,9 @@ const Header: FC = () => {
   return (
     <AppBar position="static">
       <Bar>
-        <Box
-          component="img"
-          src="/vite.svg"
-          alt="Logo"
-          sx={{
-            height: 40,
-          }}
-        />
+        <Box>
+          <Logo size={60} />
+        </Box>
 
         <SectionsContainer>
           {parts.map((section, i) =>
@@ -94,14 +97,22 @@ const Header: FC = () => {
           }}
         >
           {subSections?.map(({ route, title }) => (
-            <MenuItem onClick={handleNavigate(route)}>{title}</MenuItem>
+            <MenuItem key={route} onClick={handleNavigate(route)}>
+              {title}
+            </MenuItem>
           ))}
         </Menu>
 
+        <IconButton
+          onClick={() => setTheme((prev) => (prev === "dark" ? "light" : "dark"))}
+          color="inherit"
+        >
+          {theme === "light" ? <Brightness7 /> : <Brightness4 />}
+        </IconButton>
         <Button
           color="inherit"
           onClick={handleLogout}
-          sx={{ px: 2, mr: 5 }}
+          sx={{ px: 2, mr: 1 }}
           endIcon={<LogoutIcon />}
         >
           Выйти

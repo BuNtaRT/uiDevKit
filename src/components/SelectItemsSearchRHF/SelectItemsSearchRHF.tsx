@@ -3,6 +3,7 @@ import { Container } from "./SelectItemsSearchRHF.styles.ts";
 import SearchField from "../SearchField/SearchField.tsx";
 import { OptionsType } from "../../utils/typesUtils.ts";
 import {
+  Box,
   Checkbox,
   FormHelperText,
   List,
@@ -41,45 +42,53 @@ const SelectItemsSearchRHF: FC<PropsType> = (props) => {
       {/* Поле поиска */}
       <SearchField value={search} onChange={setSearch} size="small" variant="standard" />
 
-      {/* Список отфильтрованных опций */}
-      {filteredOptions.length > 0 ? (
-        <List>
-          {filteredOptions.map(({ id, name }) => (
-            <ListItem
-              key={id}
-              component="div"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                padding: "3px 6px",
-                bgcolor: theme.palette.action.hover,
-                "&:hover": {
-                  bgcolor: theme.palette.background.paper,
-                },
-              }}
-            >
-              {/* Чекбокс */}
-              <Checkbox
-                checked={selectedIds.includes(id)} // Проверяем, выбран ли элемент
-                onChange={() => handleCheckboxChange(id)} // Обновляем состояние
+      <Box sx={{ height: 255, overflowY: "auto" }}>
+        {/* Список отфильтрованных опций */}
+        {filteredOptions.length > 0 ? (
+          <List>
+            {filteredOptions.map(({ id, name }) => (
+              <ListItem
+                key={id}
+                component="div"
                 sx={{
-                  color: theme.palette.text.primary,
-                  "&.Mui-checked": {
-                    color: theme.palette.primary.main,
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "3px 6px",
+                  "&:hover": {
+                    bgcolor: theme.palette.action.hover,
                   },
                 }}
-              />
-              {/* Текст */}
-              <ListItemText primary={name} onClick={() => onClick && onClick(id)} />
-            </ListItem>
-          ))}
-        </List>
-      ) : (
-        // Если нет совпадений
-        <Typography variant="body1" align="center" color="text.secondary">
-          Ничего не найдено
-        </Typography>
-      )}
+              >
+                {/* Чекбокс */}
+                <Checkbox
+                  checked={selectedIds.includes(id)} // Проверяем, выбран ли элемент
+                  onChange={() => handleCheckboxChange(id)} // Обновляем состояние
+                  sx={{
+                    color: theme.palette.text.primary,
+                    "&.Mui-checked": {
+                      color: theme.palette.primary.main,
+                    },
+                  }}
+                />
+                {/* Текст */}
+                <ListItemText
+                  primary={name}
+                  sx={{ cursor: "pointer" }}
+                  onClick={() => {
+                    handleCheckboxChange(id);
+                    onClick && onClick(id);
+                  }}
+                />
+              </ListItem>
+            ))}
+          </List>
+        ) : (
+          // Если нет совпадений
+          <Typography variant="body1" align="center" color="text.secondary">
+            Ничего не найдено
+          </Typography>
+        )}
+      </Box>
 
       {/* Ошибка валидации */}
       {error && <FormHelperText error>{error.message}</FormHelperText>}

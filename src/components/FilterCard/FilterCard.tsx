@@ -1,7 +1,6 @@
 import Form, { FormPropsType } from "../Form/Form.tsx";
 import { FieldValues } from "react-hook-form";
-import { Button, Typography } from "@mui/material";
-import { Line } from "../MicroComponents.ts";
+import { Button, Divider, Typography } from "@mui/material";
 import { Filters, FormContainer } from "./FilterCard.styles.ts";
 
 const FilterCard = <T extends FieldValues>(props: PropsType<T>) => {
@@ -14,7 +13,7 @@ const FilterCard = <T extends FieldValues>(props: PropsType<T>) => {
           <Typography variant="h5" align="center" sx={{ pt: 1 }}>
             {label}
           </Typography>
-          <Line margin={12} />
+          <Divider sx={{my: 4}} />
           {children}
 
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>

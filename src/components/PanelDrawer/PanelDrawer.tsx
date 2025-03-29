@@ -1,21 +1,39 @@
 import { FC } from "react";
-import { Box, Drawer, IconButton, Typography } from "@mui/material";
+import { alpha, Box, Drawer, IconButton, Typography, useTheme } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 const PanelDrawer: FC<PropsType> = (props) => {
-  const { isOpen, onClose, label, children } = props;
+  const { isOpen, onClose, label, children, width } = props;
+
+  const theme = useTheme();
 
   return (
-    <Drawer anchor="right" open={isOpen} onClose={onClose}>
+    <Drawer
+      slotProps={{
+        backdrop: {
+          sx: {
+            backdropFilter: "blur(4px)", // Размытие фона
+            backgroundColor: "rgba(0, 0, 0, 0.1)", // Светлый полупрозрачный фон
+          },
+        },
+        paper: {
+          sx: {
+            backgroundColor: "transparent",
+          },
+        },
+      }}
+      anchor="right"
+      open={isOpen}
+      onClose={onClose}
+    >
       <Box
         sx={{
-          width: 700,
-          maxWidth: "700px", // Максимальная ширина для больших экранов
+          width: width ?? 700,
           height: "100%",
           padding: 4,
           display: "flex",
           flexDirection: "column",
-          backgroundColor: "background.paper",
+          backgroundColor: alpha(theme.palette.background.paper, 0.8),
         }}
       >
         {/* Заголовок и кнопка закрытия */}
@@ -45,6 +63,7 @@ type PropsType = {
   onClose: () => void;
   label: string;
   children: React.ReactNode;
+  width?: number;
 };
 
 export default PanelDrawer;

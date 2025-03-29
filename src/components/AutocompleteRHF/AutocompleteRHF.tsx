@@ -2,7 +2,7 @@ import { FC } from "react";
 import { Controller, useController, useFormContext } from "react-hook-form";
 import { OptionsType, OptionType } from "../../utils/typesUtils.ts";
 import { FormControl, FormHelperText, TextField } from "@mui/material";
-import { Autocomplete } from "@mui/lab";
+import { Autocomplete } from "@mui/material";
 
 const AutocompleteRHF: FC<PropsType> = (props) => {
   const { name, label, options, max = 100, multiple } = props;

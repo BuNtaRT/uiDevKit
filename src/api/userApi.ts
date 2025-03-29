@@ -1,6 +1,7 @@
 import { entitiesBase } from "./request.ts";
 import { api } from "./api.ts";
 import { AxiosResponse } from "axios";
+import { SelfLinkType } from "./types.ts";
 
 export const userApi = () => ({
   ...entitiesBase<UserType>(api, "users"),
@@ -10,7 +11,7 @@ export const userApi = () => ({
   },
 });
 
-export type UserType = {
+export type UserType = SelfLinkType & {
   id: number;
   lastName: string;
   firstName: string;

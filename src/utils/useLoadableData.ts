@@ -1,5 +1,5 @@
 import { Atom, useAtomValue } from "jotai";
-import { EntitiesResponseType, EntitiesType } from "../api/types";
+import { EntitiesResponseType } from "../api/types";
 import { AtomWithQueryResult } from "jotai-tanstack-query";
 
 /**
@@ -17,62 +17,60 @@ import { AtomWithQueryResult } from "jotai-tanstack-query";
  */
 
 export function useLoadableData<T>(
-  state: Atom<Loadable<AtomWithQueryResult<EntitiesResponseType<T> | undefined>>>,
+  state: Atom<AtomWithQueryResult<EntitiesResponseType<T> | undefined>>,
   initialValue: T[]
-): DataWithCountType<T>;
-
-export function useLoadableData<T, I>(
-  state: Atom<Loadable<AtomWithQueryResult<T>>>,
-  initialValue: I
-): ResolveType<T> | I;
-
-export function useLoadableData<T, I>(
-  state: Atom<Loadable<AtomWithQueryResult<T | undefined>>>,
-  initialValue: I | T[]
-): ResolveType<T> | I | DataWithCountType<T> {
+): DataWithCountType<T> {
   const loadableData = useAtomValue(state);
-  const isArray = Array.isArray(initialValue);
 
-  if (loadableData.state === "hasData") {
-    const data = loadableData.data.data;
+  if (loadableData.fetchStatus === "idle") {
+    const data = loadableData.data;
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (isArray && typeof data === "object" && "items" in data) {
+    if (typeof data === "object" && "items" in data) {
       const items = (data as unknown as EntitiesResponseType<T>).items;
       return {
         data: items,
         totalCount: (data as unknown as EntitiesResponseType<T>)?.totalCount ?? 0,
-        loadableData: { state: loadableData.state, data: items },
+        isLoading: false,
       };
-    } else if (isArray)
-      return { data: [], totalCount: 0, loadableData: { state: loadableData.state, data: [] } };
+    } else
+      return {
+        data: [],
+        totalCount: 0,
+        isLoading: false,
+      };
+  }
+  return {
+    data: initialValue as T[],
+    totalCount: 0,
+    isLoading: loadableData.fetchStatus === "fetching",
+  };
+}
 
-    return data as ResolveType<T>;
+export function useLoadableSingleData<T>(state: Atom<AtomWithQueryResult<T>>): DataSingleType<T> {
+  const loadableData = useAtomValue(state);
+
+  console.log(loadableData);
+  if (loadableData.fetchStatus === "idle") {
+    const data = loadableData.data;
+
+    return { data: data as ResolveType<T>, isLoading: false };
   }
 
-  if (isArray) return { data: [], totalCount: 0, loadableData };
-
-  return initialValue as I;
+  return {
+    data: undefined,
+    isLoading: loadableData.fetchStatus === "fetching",
+  };
 }
 
 type DataWithCountType<T> = {
   data: T[];
   totalCount: number;
-  loadableData: Loadable<EntitiesType<T>>;
+  isLoading: boolean;
 };
 
-type Loadable<Value> =
-  | {
-      state: "loading";
-    }
-  | {
-      state: "hasError";
-      error: unknown;
-    }
-  | {
-      state: "hasData";
-      data: ResolveType<Value>;
-    };
+type DataSingleType<T> = {
+  data: ResolveType<T> | undefined;
+  isLoading: boolean;
+};
 
 type ResolveType<T> = T extends Promise<infer V> ? V : T;

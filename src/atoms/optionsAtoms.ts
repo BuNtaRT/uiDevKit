@@ -6,7 +6,7 @@ export const useUsersOptions = () => {
   const { data } = useLoadableData(usersState, []);
 
   return data.map((user) => ({
-    id: user.id.toString(),
+    id: user._links.self.href,
     name: `${getFullName(user)} (${user.username})`,
   }));
 };

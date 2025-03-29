@@ -1,18 +1,30 @@
-export const sections = (): SectionsType => [
-  {
-    title: "Страница",
-    route: "*",
-  },
-  {
-    title: "Секция",
-    sections: [
-      {
-        title: "Страница",
-        route: "*",
-      },
-    ],
-  },
-];
+import { CurrentUserType } from "../atoms/atoms.ts";
+
+export const sections = (user?: CurrentUserType): SectionsType => {
+  const { isAdmin } = user || {};
+
+  const administrationSections = isAdmin
+    ? [
+        {
+          title: "Секция",
+          sections: [
+            {
+              title: "Файлы",
+              route: '',
+            },
+          ],
+        },
+      ]
+    : [];
+
+  return [
+    {
+      title: "Станица",
+      route: '',
+    },
+    ...administrationSections,
+  ];
+};
 
 export type SectionsType = SectionType[];
 

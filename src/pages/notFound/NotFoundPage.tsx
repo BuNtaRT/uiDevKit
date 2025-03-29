@@ -19,7 +19,11 @@ const NotFoundPage: FC = () => {
               Страница, которую вы ищете, могла быть удалена, ее название могло быть изменено или
               она временно недоступна.
             </Typography>
-            <StyledButton variant="contained" color="primary" onClick={() => navigate("/")}>
+            <StyledButton
+              variant="contained"
+              color="primary"
+              onClick={() => navigate("", { replace: true })}
+            >
               На главную
             </StyledButton>
           </StyledBox>

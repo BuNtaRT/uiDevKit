@@ -1,13 +1,11 @@
 import { useAtomValue } from "jotai/index";
-import { currentUserAtom } from "../atoms/atoms.ts";
+import { currentUserState } from "../atoms/atoms.ts";
 
 export const useUserRoles = () => {
-  const { data } = useAtomValue(currentUserAtom);
-  const { isStudent = false, user, isAdmin = false, isMentor = false } = data || {};
+  const { data } = useAtomValue(currentUserState);
+  const { user, isAdmin = false } = data || {};
 
   return {
-    isStudent,
-    isMentor,
     isAdmin,
     user,
   };

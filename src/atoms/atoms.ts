@@ -1,7 +1,6 @@
 import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
 import { userApi, UserType } from "../api/userApi.ts";
-import { loadable } from "jotai/vanilla/utils";
 
 // ------------------------------ LOADER'Ы ДОБАВЛЕНИЯ/РЕДАКТИРОВАНИЯ/УДАЛЕНИЯ СТРОКИ ТАБЛИЦЫ
 
@@ -14,13 +13,16 @@ export const searchQueryState = atom<string>("");
 
 // ------------------------------ ГЛАВНАЯ ПАГИНАЦИЯ
 
-export const paginationState = atom<PaginationStateType>({ page: 0, quantity: 10 });
+export const pageState = atom<number>(1);
+export const totalCountState = atom<number>(0);
 
 // ------------------------------ ФОРМЫ - СОСТОЯНИЕ
 
-export const formState = atom<boolean>(false);
+export const formState = atom<unknown | boolean>(false);
 
-export type PaginationStateType = { page: number; quantity: number };
+// ------------------------------ ТЕМА ПРИЛОЖЕНИЯ
+
+export const themeState = atom<"dark" | "light">("light");
 
 // ------------------------------ Модальное окно уведомления
 
@@ -39,7 +41,7 @@ export const modalRightState = atom("");
 
 // ------------------------------ текущий пользователь
 
-export const currentUserAtom = atomWithQuery(() => currentUserQuery());
+export const currentUserState = atomWithQuery(() => currentUserQuery());
 
 export const currentUserQuery = () => ({
   queryKey: ["currentUser"],
@@ -47,7 +49,7 @@ export const currentUserQuery = () => ({
   keepPreviousData: true,
 });
 
-export const currentUserState = loadable(currentUserAtom);
+export const useCurrentUserKeys = () => ["currentUser"];
 
 const fetchCurrentUser = async (): Promise<CurrentUserType> => {
   const res = await userApi().me();
@@ -59,26 +61,18 @@ const fetchCurrentUser = async (): Promise<CurrentUserType> => {
     res.data.roles.some(({ authority }) => authority === name);
 
   const isAdmin = roleByAuthority(rolesAuthority.admin);
-  const isMentor = roleByAuthority(rolesAuthority.mentor);
-  const isStudent = roleByAuthority(rolesAuthority.user);
 
   return {
     user: res.data,
     isAdmin,
-    isMentor,
-    isStudent,
   };
 };
 
-type CurrentUserType = {
+export type CurrentUserType = {
   user: UserType;
   isAdmin: boolean;
-  isMentor: boolean;
-  isStudent: boolean;
 };
 
 const rolesAuthority = {
-  admin: "ROLE_admin",
-  mentor: "ROLE_mentor",
-  user: "ROLE_user",
+  admin: "admin",
 };

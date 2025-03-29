@@ -1,8 +1,8 @@
 import { FC, useEffect, useState } from "react";
-import { Typography } from "@mui/material";
 
-const Timer: FC<PropsType> = (props) => {
-  const { endDate } = props;
+const TimerText: FC<PropsType> = (props) => {
+  const { onEndTimer, endDate } = props;
+
   const [timeLeft, setTimeLeft] = useState<string>("00:00:00");
 
   useEffect(() => {
@@ -12,6 +12,7 @@ const Timer: FC<PropsType> = (props) => {
 
       if (timeDifference <= 0) {
         setTimeLeft("00:00:00");
+        onEndTimer && onEndTimer();
         return;
       }
 
@@ -33,15 +34,12 @@ const Timer: FC<PropsType> = (props) => {
     return () => clearInterval(intervalId);
   }, [endDate]);
 
-  return (
-    <Typography variant="h6" align="right">
-      Осталось времени: {timeLeft}
-    </Typography>
-  );
+  return <>{timeLeft}</>;
 };
 
 type PropsType = {
+  onEndTimer?: () => void;
   endDate: Date;
 };
 
-export default Timer;
+export default TimerText;

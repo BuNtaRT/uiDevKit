@@ -70,7 +70,7 @@ export type FormatDateResultType<T> = T extends "object"
 
 export type TypeType = "object" | "forFrontend" | "forBackend" | "bigDate";
 
-export type DateType = Date | FrontendDateType | BackendDateType | BigBackendDateType;
+export type DateType = Date | FrontendDateType | BackendDateType | BigBackendDateType | string;
 
 export type FrontendDateType =
   `${number}${number}.${number}${number}.${number}${number}${number}${number}`;

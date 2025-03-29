@@ -4,10 +4,23 @@ import { size } from "../../styles/sizeStyles.ts";
 import { margins } from "../../styles/marginsStyles.ts";
 import { Box, Card, styled as muiStyled } from "@mui/material";
 import { borders } from "../../styles/borderStyles.ts";
+import { colors } from "../../styles/colors.ts";
+
+export const PaginationContainer = styled.div`
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background: ${colors.gray};
+  padding: 12px;
+  border-radius: 12px;
+  min-width: 300px;
+`;
 
 export const Container = styled.div`
   ${flex({ gap: 24 })};
-  ${size({ max: { w: 1400 } })}
+  ${size({ max: { w: 1400 }, min: { h: "90vh" } })}
   ${margins({ p: "24 24", m: "0 auto" })}
 `;
 

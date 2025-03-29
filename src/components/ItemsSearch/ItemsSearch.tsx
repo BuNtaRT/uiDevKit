@@ -1,11 +1,11 @@
-import { FC, useState } from "react";
+import { FC, ReactNode, useState } from "react";
 import { Container } from "./ItemsSearch.styles.ts";
 import SearchField from "../SearchField/SearchField.tsx";
 import { OptionsType } from "../../utils/typesUtils.ts";
 import { List, ListItem, ListItemText, Typography, useTheme } from "@mui/material";
 
 const ItemsSearch: FC<PropsType> = (props) => {
-  const { options, onClick } = props;
+  const { options, onClick, button } = props;
 
   const theme = useTheme();
   const [search, setSearch] = useState("");
@@ -34,14 +34,15 @@ const ItemsSearch: FC<PropsType> = (props) => {
                 color: theme.palette.text.primary,
                 padding: "3px 6px",
                 textAlign: "left",
-                bgcolor: theme.palette.action.hover,
+                bgcolor: theme.palette.background.paper,
                 "&:hover": {
-                  bgcolor: theme.palette.background.paper,
+                  bgcolor: theme.palette.action.hover,
                 },
               }}
               onClick={() => handleClick(id)}
             >
               <ListItemText primary={name} />
+              {button}
             </ListItem>
           ))}
         </List>
@@ -58,6 +59,7 @@ const ItemsSearch: FC<PropsType> = (props) => {
 type PropsType = {
   options: OptionsType;
   onClick: (id: string) => void;
+  button?: ReactNode;
 };
 
 export default ItemsSearch;

@@ -1,8 +1,7 @@
 import { AxiosResponse } from "axios";
 import { EntitiesResponseType, IdType } from "./types";
-import { getIdFromLink } from "../utils/getIdFromLink.ts";
 import { ApiType } from "./api.ts";
-import { clearableObject } from "../utils/clearableObject.ts";
+import { AllPropType, getAllParams, getAllResponse } from "./apiModules.ts";
 
 /**
  *
@@ -22,34 +21,17 @@ export const entitiesBase = <DATA>(instance: ApiType, entityName: string) => {
 
   return {
     getAll: async (props?: AllPropType): Promise<AxiosResponse<EntitiesResponseType<DATA>>> => {
-      const page = props?.page;
-      const size = props?.size;
-      const filters = props?.filter ? clearableObject(props?.filter) : undefined;
-      const link = props?.baseLink;
-
-      const params = {
-        params: {
-          ...(page || page === 0 ? { page } : {}),
-          ...(size || size === 0 ? { size } : {}),
-          ...(filters ? filters : {}),
-        },
-      };
+      const link = props?.link;
+      const params = getAllParams(props);
 
       const res = link
         ? rawInstance.get(`${link}`, params)
         : baseInstance.get(`/${entityName}`, params);
 
       const response = await res;
-      const itemsRaw = response.data._embedded[entityName];
+      const data = getAllResponse(response);
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const items = itemsRaw.map((item: any) => ({
-        ...item,
-        id: getIdFromLink(item._links.self.href as string),
-      }));
-      const totalCount = response.data.page.totalElements;
-
-      return { ...res, data: { items, totalCount } };
+      return { ...res, data };
     },
 
     get: (request: RequestType): Promise<AxiosResponse<DATA>> => {
@@ -78,13 +60,6 @@ export const entitiesBase = <DATA>(instance: ApiType, entityName: string) => {
       return link ? rawInstance.delete(link) : baseInstance.delete(`/${entityName}/${id}`);
     },
   };
-};
-
-type AllPropType = {
-  page?: number;
-  size?: number;
-  filter?: object;
-  baseLink?: string;
 };
 
 export type RequestType = {
