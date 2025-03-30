@@ -1,0 +1,14 @@
+services:
+  frontend:
+    env_file:
+      - .env
+    environment:
+      VITE_API_URL: ${VITE_API_URL}
+      FRONTEND_PORT: ${FRONTEND_PORT}
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    ports:
+      - '${FRONTEND_PORT}:80'
+    container_name: wds-front
+    restart: always
